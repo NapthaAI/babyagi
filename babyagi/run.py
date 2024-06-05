@@ -4,7 +4,7 @@ from typing import Dict
 from naptha_sdk.task import Task
 from naptha_sdk.client.node import Node
 from babyagi.utils import get_logger
-from babyagi.schemas import InputSchema, Task, TaskList
+from babyagi.schemas import InputSchema, TaskList
 
 
 logger = get_logger(__name__)
