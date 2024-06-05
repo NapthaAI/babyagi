@@ -59,7 +59,7 @@ async def run(inputs: InputSchema, worker_nodes, orchestrator_node, flow_run, cf
 
         for task in tasks_to_perform:
             task_str = f"Task Name: {task['name']}\nTask Description: {task['description']}\n"
-            task_response = task_execution_task(task=task_str, objective=inputs.objective)
+            task_response = await task_execution_task(task=task_str, objective=inputs.objective)
             logger.info(f"Task response: {task_response}")
 
             task['result'] = task_response
@@ -70,7 +70,7 @@ async def run(inputs: InputSchema, worker_nodes, orchestrator_node, flow_run, cf
             tasks_str += f"Task Name: {task['name']}\nTask Description: {task['description']}\nTask Result: {task['result']}\nDone: {task['done']}\n"
         logger.info(f"Final task list: {tasks_str}")
 
-        task_finalizer_response = task_finalizer_task(task=tasks_str, objective=inputs.objective)
+        task_finalizer_response = await task_finalizer_task(task=tasks_str, objective=inputs.objective)
         logger.info(f"Task finalizer response: {task_finalizer_response}")
 
         count_num_outstanding_tasks = len([task for task in task_list['list'] if not task['done']])
