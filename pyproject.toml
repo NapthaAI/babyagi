@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "babyagi"
+version = "0.1.0"
+description = ""
+authors = ["moarshy <marshath@gmail.com>"]
+readme = "README.md"
+packages = [
+    {include = "babyagi", from="."}
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.7.0"
+litellm = "^1.35.15"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

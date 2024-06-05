@@ -1,0 +1,17 @@
+name: "babyagi"
+author: "naptha"
+version: "0.1.0"
+description: "A naptha's babyagi flow."
+license: "MIT"
+
+Final Report:
+  save: false
+  location: "ipfs"
+
+outputs:
+  save: false
+  location: "node"
+
+implementation:
+  package:
+    entrypoint: "run.py"
