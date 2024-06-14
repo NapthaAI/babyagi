@@ -42,7 +42,8 @@ async def run(inputs: InputSchema, worker_nodes, orchestrator_node, flow_run, cf
     logger.info(f"Initial task list: {task_list}")
 
     task_list = json.loads(task_list)
-
+    for task in task_list['list']:
+        task['done'] = False
 
     tasks_to_perform = [task for task in task_list['list'] if not task['done']]
     count_num_outstanding_tasks = len(tasks_to_perform)
