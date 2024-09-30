@@ -1,7 +1,7 @@
 name: "babyagi"
 author: "naptha"
 version: "0.1.0"
-description: "A naptha's babyagi flow."
+description: "Task solving network of agents."
 license: "MIT"
 
 Final Report:

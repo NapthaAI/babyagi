@@ -13,6 +13,8 @@ python = "^3.10"
 pydantic = "^2.7.0"
 litellm = "^1.35.15"
 
+[tool.poetry.dependencies.naptha-sdk]
+git = "https://github.com/NapthaAI/naptha-sdk.git"
 
 [build-system]
 requires = ["poetry-core"]

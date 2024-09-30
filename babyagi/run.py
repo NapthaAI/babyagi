@@ -1,44 +1,42 @@
 import json
-import asyncio
 from typing import Dict
-from naptha_sdk.task import Task as NapthaTask
-from naptha_sdk.client.node import Node
+from naptha_sdk.task import Task as Agent
 from babyagi.utils import get_logger
 from babyagi.schemas import InputSchema
 
 logger = get_logger(__name__)
 
 
-async def run(inputs: InputSchema, worker_nodes, orchestrator_node, flow_run, cfg: Dict):
+async def run(inputs: InputSchema, worker_node_urls, *args, **kwargs):
 
     # get initial task lists
-    task_list_task = NapthaTask(
-        name="task_list_task",
+    task_list_agent = Agent(
+        name="task_initiator_agent",
         fn="babyagi_task_initiator",
-        worker_node=worker_nodes[0],
-        orchestrator_node=orchestrator_node,
-        flow_run=flow_run
+        worker_node_url=worker_node_urls[0],
+        *args, 
+        **kwargs,
     )
 
-    # task_execution_task
-    task_execution_task = NapthaTask(
-        name="task_execution_task",
+    # task_execution_agent
+    task_execution_agent = Agent(
+        name="task_execution_agent",
         fn="babyagi_task_executor",
-        worker_node=worker_nodes[1],
-        orchestrator_node=orchestrator_node,
-        flow_run=flow_run
+        worker_node_url=worker_node_urls[1],
+        *args, 
+        **kwargs,
     )
 
-    # task_finalizer_task
-    task_finalizer_task = NapthaTask(
-        name="task_finalizer_task",
+    # task_finalizer_agent
+    task_finalizer_agent = Agent(
+        name="task_finalizer_agent",
         fn="babyagi_task_finalizer",
-        worker_node=worker_nodes[0],
-        orchestrator_node=orchestrator_node,
-        flow_run=flow_run
+        worker_node_url=worker_node_urls[0],
+        *args, 
+        **kwargs,
     )
 
-    task_list = await task_list_task(objective=inputs.objective)
+    task_list = await task_list_agent(objective=inputs.objective)
     logger.info(f"Initial task list: {task_list}")
 
     task_list = json.loads(task_list)
@@ -55,10 +53,10 @@ async def run(inputs: InputSchema, worker_nodes, orchestrator_node, flow_run, cf
 
         for task in tasks_to_perform:
             task_str = f"Task Name: {task['name']}\nTask Description: {task['description']}\n"
-            task_response = await task_execution_task(task=task_str, objective=inputs.objective)
-            logger.info(f"Task response: {task_response}")
+            task_execution_response = await task_execution_agent(task=task_str, objective=inputs.objective)
+            logger.info(f"Task response: {task_execution_response}")
 
-            task['result'] = task_response
+            task['result'] = task_execution_response
             task['done'] = True
 
         tasks_str = ""
@@ -66,7 +64,7 @@ async def run(inputs: InputSchema, worker_nodes, orchestrator_node, flow_run, cf
             tasks_str += f"Task Name: {task['name']}\nTask Description: {task['description']}\nTask Result: {task['result']}\nDone: {task['done']}\n"
         logger.info(f"Final task list: {tasks_str}")
 
-        task_finalizer_response = await task_finalizer_task(task=tasks_str, objective=inputs.objective)
+        task_finalizer_response = await task_finalizer_agent(task=tasks_str, objective=inputs.objective)
         logger.info(f"Task finalizer response: {task_finalizer_response}")
 
         task_finalizer_response = json.loads(task_finalizer_response)
